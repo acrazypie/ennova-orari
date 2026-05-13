@@ -47,18 +47,21 @@ Sì! Ogni collega può usare lo stesso link dell'app, ma ognuno deve inserire le
 - `README.md`: Questo file.
 
 ### Approccio CORS proxy
-L'app usa `https://corsproxy.io/?` preposto agli URL delle richieste per aggirare le restrizioni CORS di GitHub Pages. Questo proxy pubblico inoltra le richieste al sito intranet.
+L'app usa `https://thingproxy.freeboard.io/fetch/` preposto agli URL delle richieste per aggirare le restrizioni CORS di GitHub Pages. Questo proxy pubblico inoltra le richieste al sito intranet.
 
 **Limitazioni:**
-- `corsproxy.io` e molti altri proxy CORS pubblici inviano l'header `Access-Control-Allow-Origin: *`, che non è compatibile con richieste che usano `credentials: include`.
-- Per questo motivo il codice ora evita `credentials: include`; tuttavia se il login richiede cookie di sessione il proxy pubblico potrebbe comunque non funzionare.
-- In particolare, un errore `530` indica che il proxy pubblico è temporaneamente non disponibile o sovraccarico.
+- I proxy CORS pubblici possono essere instabili e occasionalmente restituire errori come `530` quando sono sovraccarichi o non disponibili.
+- L'app evita `credentials: include`; tuttavia se il login richiede cookie di sessione il proxy pubblico potrebbe comunque non funzionare.
 - Se noti che il login fallisce o la pagina dei turni non viene caricata, prova l'opzione proxy self-hosted descritta sotto.
+
+**Cambiare proxy**
+- Se desideri un proxy alternativo, aggiorna `proxyUrl` in `js/auth.js` e `js/schedule.js` con il nuovo endpoint CORS.
+- Ad esempio, un proxy self-hosted `https://tuo-proxy.example.com/fetch/` può essere più affidabile.
 
 ### Come self-hostare un proxy CORS alternativo
 Per superare le limitazioni dei cookie, puoi self-hostare un proxy CORS semplice:
 1. Usa un servizio come [cors-anywhere](https://github.com/Rob--W/cors-anywhere) deployato su una piattaforma gratuita come Railway o Render.
-2. Aggiorna il codice in `auth.js` e `schedule.js` per usare il tuo URL proxy invece di `https://corsproxy.io/?`.
+2. Aggiorna il codice in `auth.js` e `schedule.js` per usare il tuo URL proxy invece di `https://thingproxy.freeboard.io/fetch/`.
 3. Nota: Assicurati che il tuo proxy CORS sia configurato correttamente per inoltrare gli header dei cookie.
 
 ### Come aggiornare i campi del form di login

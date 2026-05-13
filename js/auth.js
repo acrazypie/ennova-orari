@@ -14,9 +14,9 @@ export function clearCredentials() {
 }
 
 export async function login(username, password) {
-    const proxyUrl = 'https://corsproxy.io/?';
+    const proxyUrl = 'https://thingproxy.freeboard.io/fetch/';
     const loginUrl = 'https://www.itpomezia.com/intranet/login.php?t=76';
-    const fullUrl = proxyUrl + encodeURIComponent(loginUrl);
+    const fullUrl = proxyUrl + loginUrl;
 
     const formData = new FormData();
     formData.append('ennova_id', username);

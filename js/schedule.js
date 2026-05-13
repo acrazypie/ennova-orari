@@ -10,9 +10,9 @@ export async function fetchSchedule() {
     await login(credentials.username, credentials.password);
 
     // Fetch schedule page
-    const proxyUrl = 'https://corsproxy.io/?';
+    const proxyUrl = 'https://thingproxy.freeboard.io/fetch/';
     const scheduleUrl = 'https://itpomezia.com/intranet/pages/bacheca/mio-calendario';
-    const fullUrl = proxyUrl + encodeURIComponent(scheduleUrl);
+    const fullUrl = proxyUrl + scheduleUrl;
 
     let response;
     try {
