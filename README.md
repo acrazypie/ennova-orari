@@ -48,9 +48,9 @@ Sì! Ogni collega può usare lo stesso link dell'app, ma ognuno deve inserire le
 
 ### Approccio CORS proxy — Configurazione e Troubleshooting
 
-L'app utilizza un proxy CORS configurabile per aggirare le restrizioni CORS di GitHub Pages (stesso dominio).
+L'app utilizza un proxy CORS configurabile per aggirare le restrizioni CORS di GitHub Pages.
 
-**Proxy attuale (default):** `https://api.allorigins.win/raw?url=`
+**Proxy configurato al momento:** cors-anywhere deployato su Railway
 
 **Come cambiar proxy**
 - Apri `js/auth.js` e `js/schedule.js`.
@@ -60,43 +60,43 @@ L'app utilizza un proxy CORS configurabile per aggirare le restrizioni CORS di G
 **Proxy pubblici disponibili:**
 | Proxy | URL | Stabilità | Cookies | Note |
 |-------|-----|-----------|---------|------|
-| AllOrigins | `https://api.allorigins.win/raw?url=` | Media | No | Default, gratuito, pubblico |
-| CORS-Anywhere (self-hosted) | `https://tuo-proxy/` | Alta | Sì | Consigliato (vedi sotto) |
+| AllOrigins | `https://api.allorigins.win/raw?url=` | Media | No | Gratuito, pubblico |
+| CORS-Anywhere (self-hosted) | `https://tuo-proxy/` | Alta | No | Consigliato — vedi sotto |
 
-**Limitazioni dei proxy pubblici:**
-- Possono essere offline o sovraccarichi senza preavviso.
-- Non supportano i cookie di sessione (header `Set-Cookie`).
-- Sono rate-limited e potrebbero rallentare le richieste.
+**Soluzione consigliata: Self-hosting cors-anywhere su Railway (gratuito)**
 
-**Soluzione consigliata: Self-hosting con Railway (gratuito)**
-
-1. **Clone `cors-anywhere` su Railway:**
+1. **Crea un progetto Railway con cors-anywhere:**
    - Vai su [https://railway.app](https://railway.app) e accedi con GitHub.
    - Clicca "Create a New Project" → "Deploy from GitHub repo".
    - Cerca e seleziona il repo [cors-anywhere](https://github.com/Rob--W/cors-anywhere).
-   - Railway farà il deploy automatico e ti darà un URL tipo `https://xxx.railway.app/`.
+   - Railway farà il deploy e ti assegnerà un URL, es. `https://cors-anywhere-xxxxxx.up.railway.app`.
 
 2. **Aggiorna il `PROXY_URL` nell'app:**
-   - In `js/auth.js` e `js/schedule.js`, cambia:
+   - In `js/auth.js` e `js/schedule.js`, cambia la riga:
      ```javascript
-     const PROXY_URL = 'https://xxx.railway.app/';
+     const PROXY_URL = 'https://cors-anywhere-xxxxxx.up.railway.app/';
      ```
-   - Sostituisci `xxx.railway.app` con il tuo URL di Railway.
+   - **Attenzione:** L'URL deve finire con `/` (slash).
 
-3. **Test:**
-   - Torna alla app, clicca "Aggiorna" e verifica che i turni si carichino.
-   - Se fallisce ancora, controlla la console del browser (F12 → Console) per il messaggio di errore esatto.
+3. **Formato degli URL con cors-anywhere:**
+   - Il proxy concatena il target URL direttamente: `https://proxy.com/https://target.com/page`
+   - Non usare `encodeURIComponent()` — il target va appeso così com'è.
+   - Le form data vanno inviate come `application/x-www-form-urlencoded`, non multipart.
 
-**Alternative di self-hosting (rating: facilità):**
-- **Render.com** (come Railway, ma richiede carta di credito)
-- **Heroku** (ormai a pagamento, non consigliato)
-- **Un tuo server** (VPS, Docker, ecc. — più complesso ma totalmente affidabile)
+4. **Test:**
+   - Torna alla app, immetti le credenziali, clicca "Aggiorna".
+   - Se vedi il messaggio di errore nel detail sotto il messaggio principale, controlla il testo esatto.
+   - Apri DevTools (F12 → Console) per l'errore completo.
 
-**Se anche il proxy self-hosted fallisce:**
-- Apri DevTools (F12 → Network).
-- Guarda la risposta della richiesta login/schedule.
-- Potrebbe essere che l'intranet richieda header aggiuntivi che il proxy non inoltra (ad es. User-Agent, Referer, ecc.).
-- Contatta l'amministratore dell'intranet per sapere se GitHub Pages è bloccato per motivi di sicurezza.
+**Nota importante su cors-anywhere:**
+- cors-anywhere **disabilita e rimuove i cookie** da tutte le richieste per motivi di sicurezza.
+- Se l'intranet usa autenticazione basata su cookie di sessione (cookie `PHPSESSID`, ecc.), il login potrebbe non funzionare.
+- Se questo succede, non c'è soluzione lato proxy — contatta l'amministratore per sapere se GitHub Pages è blocca per ragioni di sicurezza.
+
+**Alternative di self-hosting (se cors-anywhere non funziona):**
+- **Un tuo VPS cloud** (DigitalOcean, Linode, ecc.) — maggiore controllo ma più complesso.
+- **Docker + Renderer** — media complessità, buona affidabilità.
+- Contatta l'amministratore IT per sapere se una whitelistiting di GitHub Pages è possibile anziché usare un proxy.
 
 ### Come aggiornare i campi del form di login
 Se l'intranet cambia i nomi dei campi del form di autenticazione:

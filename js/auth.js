@@ -2,11 +2,10 @@ const CREDENTIALS_KEY = 'credentials';
 
 // ===== CONFIGURAZIONE PROXY CORS =====
 // Cambia questo URL con il tuo proxy CORS preferito.
-// Opzioni:
-//   - Public (instabile): 'https://api.allorigins.win/raw?url='
-//   - Self-hosted (consigliato): 'https://tuo-proxy.example.com/'
+// Per cors-anywhere: 'https://cors-anywhere-production-xxxx.up.railway.app/'
+// Per altri proxy: leggi la documentazione del proxy.
 // Vedi README.md per istruzioni di self-hosting.
-const PROXY_URL = 'cors-anywhere-production-9355.up.railway.app';
+const PROXY_URL = 'https://cors-anywhere-production-9355.up.railway.app/';
 // =====================================
 
 export function getCredentials() {
@@ -24,19 +23,22 @@ export function clearCredentials() {
 
 export async function login(username, password) {
     const loginUrl = 'https://www.itpomezia.com/intranet/login.php?t=76';
-    const fullUrl = PROXY_URL + encodeURIComponent(loginUrl);
+    const fullUrl = PROXY_URL + loginUrl;
 
-    const formData = new FormData();
-    formData.append('ennova_id', username);
-    formData.append('password_intranet', password);
-    formData.append('action', 'login');
+    const params = new URLSearchParams();
+    params.append('ennova_id', username);
+    params.append('password_intranet', password);
+    params.append('action', 'login');
 
     let response;
     try {
         response = await fetch(fullUrl, {
             method: 'POST',
-            body: formData,
-            mode: 'cors'
+            body: params,
+            mode: 'cors',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
         });
     } catch (error) {
         throw new Error(`Login request failed: ${error.message}`);

@@ -3,11 +3,10 @@ import { login } from './auth.js';
 // ===== CONFIGURAZIONE PROXY CORS =====
 // Cambia questo URL con il tuo proxy CORS preferito.
 // Deve corrispondere a quello in auth.js.
-// Opzioni:
-//   - Public (instabile): 'https://api.allorigins.win/raw?url='
-//   - Self-hosted (consigliato): 'https://tuo-proxy.example.com/'
+// Per cors-anywhere: 'https://cors-anywhere-production-xxxx.up.railway.app/'
+// Per altri proxy: leggi la documentazione del proxy.
 // Vedi README.md per istruzioni di self-hosting.
-const PROXY_URL = 'cors-anywhere-production-9355.up.railway.app';
+const PROXY_URL = 'https://cors-anywhere-production-9355.up.railway.app/';
 // =====================================
 
 export async function fetchSchedule() {
@@ -21,7 +20,7 @@ export async function fetchSchedule() {
 
     // Fetch schedule page
     const scheduleUrl = 'https://itpomezia.com/intranet/pages/bacheca/mio-calendario';
-    const fullUrl = PROXY_URL + encodeURIComponent(scheduleUrl);
+    const fullUrl = PROXY_URL + scheduleUrl;
 
     let response;
     try {
