@@ -22,13 +22,15 @@ export function clearCredentials() {
 }
 
 export async function login(username, password) {
-    const loginUrl = 'https://www.itpomezia.com/intranet/login.php?t=76';
-    const fullProxyUrl = PROXY_URL + loginUrl;
+    const loginPageUrl = 'https://www.itpomezia.com/intranet/login.php?t=76';
+    const loginPostUrl = 'https://www.itpomezia.com/intranet/login.php';
+    const pageProxyUrl = PROXY_URL + loginPageUrl;
+    const postProxyUrl = PROXY_URL + loginPostUrl;
 
     // Step 1: Fetch the login page to extract the CSRF token
     let loginPageResponse;
     try {
-        loginPageResponse = await fetch(fullProxyUrl, {
+        loginPageResponse = await fetch(pageProxyUrl, {
             method: 'GET',
             mode: 'cors'
         });
@@ -51,16 +53,16 @@ export async function login(username, password) {
     }
     const csrfToken = csrfTokenElement.value;
 
-    // Step 3: POST the login form with CSRF token
+    // Step 3: POST the login form with CSRF token to login.php (without ?t=76)
     const params = new URLSearchParams();
     params.append('csrf_token', csrfToken);
     params.append('ennova_id', username);
     params.append('password_intranet', password);
-    params.append('action', 'login');
+    params.append('loginButton', 'Login');
 
     let response;
     try {
-        response = await fetch(fullProxyUrl, {
+        response = await fetch(postProxyUrl, {
             method: 'POST',
             body: params,
             mode: 'cors',
