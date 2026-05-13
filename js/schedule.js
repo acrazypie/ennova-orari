@@ -7,7 +7,7 @@ import { login } from './auth.js';
 //   - Public (instabile): 'https://api.allorigins.win/raw?url='
 //   - Self-hosted (consigliato): 'https://tuo-proxy.example.com/'
 // Vedi README.md per istruzioni di self-hosting.
-const PROXY_URL = 'https://api.allorigins.win/raw?url=';
+const PROXY_URL = 'cors-anywhere-production-9355.up.railway.app';
 // =====================================
 
 export async function fetchSchedule() {
