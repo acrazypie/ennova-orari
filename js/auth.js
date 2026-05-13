@@ -26,7 +26,7 @@ export async function login(username, password) {
     const response = await fetch(fullUrl, {
         method: 'POST',
         body: formData,
-        credentials: 'include' // Note: CORS proxy may strip cookies
+        mode: 'cors'
     });
 
     if (!response.ok) {

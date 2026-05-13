@@ -18,8 +18,10 @@ export function hideLoading() {
     document.getElementById('loading').classList.add('hidden');
 }
 
-export function showError() {
-    document.getElementById('error').classList.remove('hidden');
+export function showError(message = 'Impossibile caricare i turni. Controlla le credenziali nelle impostazioni.') {
+    const errorElement = document.getElementById('error');
+    errorElement.querySelector('p').textContent = message;
+    errorElement.classList.remove('hidden');
     document.getElementById('shifts').innerHTML = '';
 }
 
@@ -27,7 +29,7 @@ export function renderShifts(shifts) {
     document.getElementById('error').classList.add('hidden');
     const shiftsContainer = document.getElementById('shifts');
 
-    if (shifts.length === 0) {
+    if (!shifts || shifts.length === 0) {
         shiftsContainer.innerHTML = '<p class="no-shifts">Nessun turno trovato.</p>';
         return;
     }

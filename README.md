@@ -50,8 +50,9 @@ Sì! Ogni collega può usare lo stesso link dell'app, ma ognuno deve inserire le
 L'app usa `https://corsproxy.io/?` preposto agli URL delle richieste per aggirare le restrizioni CORS di GitHub Pages. Questo proxy pubblico inoltra le richieste al sito intranet.
 
 **Limitazioni:**
-- La maggior parte dei proxy CORS pubblici (incluso corsproxy.io) rimuovono gli header `Set-Cookie`, il che può causare fallimenti silenziosi dell'autenticazione se il login dell'intranet si basa su cookie di sessione.
-- Se noti che il login fallisce silenziosamente, aggiungi un avviso visibile nell'UI che suggerisce di provare l'opzione proxy self-hosted descritta sotto.
+- `corsproxy.io` e molti altri proxy CORS pubblici inviano l'header `Access-Control-Allow-Origin: *`, che non è compatibile con richieste che usano `credentials: include`.
+- Per questo motivo il codice ora evita `credentials: include`; tuttavia se il login richiede cookie di sessione il proxy pubblico potrebbe comunque non funzionare.
+- Se noti che il login fallisce o la pagina dei turni non viene caricata, prova l'opzione proxy self-hosted descritta sotto.
 
 ### Come self-hostare un proxy CORS alternativo
 Per superare le limitazioni dei cookie, puoi self-hostare un proxy CORS semplice:
