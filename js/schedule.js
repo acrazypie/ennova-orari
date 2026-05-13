@@ -24,7 +24,11 @@ export async function fetchSchedule() {
 
     let response;
     try {
-        response = await fetch(fullUrl);
+        response = await fetch(fullUrl, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        });
     } catch (error) {
         throw new Error(`Schedule request failed: ${error.message}`);
     }

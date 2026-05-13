@@ -32,7 +32,10 @@ export async function login(username, password) {
     try {
         loginPageResponse = await fetch(pageProxyUrl, {
             method: 'GET',
-            mode: 'cors'
+            mode: 'cors',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
         });
     } catch (error) {
         throw new Error(`Failed to fetch login page: ${error.message}`);
@@ -67,7 +70,8 @@ export async function login(username, password) {
             body: params,
             mode: 'cors',
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-Requested-With': 'XMLHttpRequest'
             }
         });
     } catch (error) {
