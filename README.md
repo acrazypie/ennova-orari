@@ -46,23 +46,57 @@ Sì! Ogni collega può usare lo stesso link dell'app, ma ognuno deve inserire le
 - `js/theme.js`: Gestisce la preferenza del tema, applica l'attributo `data-theme` all'elemento `<html>` per prevenire il flash di tema sbagliato.
 - `README.md`: Questo file.
 
-### Approccio CORS proxy
-L'app usa `https://thingproxy.freeboard.io/fetch/` preposto agli URL delle richieste per aggirare le restrizioni CORS di GitHub Pages. Questo proxy pubblico inoltra le richieste al sito intranet.
+### Approccio CORS proxy — Configurazione e Troubleshooting
 
-**Limitazioni:**
-- I proxy CORS pubblici possono essere instabili e occasionalmente restituire errori come `530` quando sono sovraccarichi o non disponibili.
-- L'app evita `credentials: include`; tuttavia se il login richiede cookie di sessione il proxy pubblico potrebbe comunque non funzionare.
-- Se noti che il login fallisce o la pagina dei turni non viene caricata, prova l'opzione proxy self-hosted descritta sotto.
+L'app utilizza un proxy CORS configurabile per aggirare le restrizioni CORS di GitHub Pages (stesso dominio).
 
-**Cambiare proxy**
-- Se desideri un proxy alternativo, aggiorna `proxyUrl` in `js/auth.js` e `js/schedule.js` con il nuovo endpoint CORS.
-- Ad esempio, un proxy self-hosted `https://tuo-proxy.example.com/fetch/` può essere più affidabile.
+**Proxy attuale (default):** `https://api.allorigins.win/raw?url=`
 
-### Come self-hostare un proxy CORS alternativo
-Per superare le limitazioni dei cookie, puoi self-hostare un proxy CORS semplice:
-1. Usa un servizio come [cors-anywhere](https://github.com/Rob--W/cors-anywhere) deployato su una piattaforma gratuita come Railway o Render.
-2. Aggiorna il codice in `auth.js` e `schedule.js` per usare il tuo URL proxy invece di `https://thingproxy.freeboard.io/fetch/`.
-3. Nota: Assicurati che il tuo proxy CORS sia configurato correttamente per inoltrare gli header dei cookie.
+**Come cambiar proxy**
+- Apri `js/auth.js` e `js/schedule.js`.
+- Modifica la riga `const PROXY_URL = '...'` con il tuo proxy preferito.
+- Entrambi i file devono avere lo **stesso** valore di `PROXY_URL`.
+
+**Proxy pubblici disponibili:**
+| Proxy | URL | Stabilità | Cookies | Note |
+|-------|-----|-----------|---------|------|
+| AllOrigins | `https://api.allorigins.win/raw?url=` | Media | No | Default, gratuito, pubblico |
+| CORS-Anywhere (self-hosted) | `https://tuo-proxy/` | Alta | Sì | Consigliato (vedi sotto) |
+
+**Limitazioni dei proxy pubblici:**
+- Possono essere offline o sovraccarichi senza preavviso.
+- Non supportano i cookie di sessione (header `Set-Cookie`).
+- Sono rate-limited e potrebbero rallentare le richieste.
+
+**Soluzione consigliata: Self-hosting con Railway (gratuito)**
+
+1. **Clone `cors-anywhere` su Railway:**
+   - Vai su [https://railway.app](https://railway.app) e accedi con GitHub.
+   - Clicca "Create a New Project" → "Deploy from GitHub repo".
+   - Cerca e seleziona il repo [cors-anywhere](https://github.com/Rob--W/cors-anywhere).
+   - Railway farà il deploy automatico e ti darà un URL tipo `https://xxx.railway.app/`.
+
+2. **Aggiorna il `PROXY_URL` nell'app:**
+   - In `js/auth.js` e `js/schedule.js`, cambia:
+     ```javascript
+     const PROXY_URL = 'https://xxx.railway.app/';
+     ```
+   - Sostituisci `xxx.railway.app` con il tuo URL di Railway.
+
+3. **Test:**
+   - Torna alla app, clicca "Aggiorna" e verifica che i turni si carichino.
+   - Se fallisce ancora, controlla la console del browser (F12 → Console) per il messaggio di errore esatto.
+
+**Alternative di self-hosting (rating: facilità):**
+- **Render.com** (come Railway, ma richiede carta di credito)
+- **Heroku** (ormai a pagamento, non consigliato)
+- **Un tuo server** (VPS, Docker, ecc. — più complesso ma totalmente affidabile)
+
+**Se anche il proxy self-hosted fallisce:**
+- Apri DevTools (F12 → Network).
+- Guarda la risposta della richiesta login/schedule.
+- Potrebbe essere che l'intranet richieda header aggiuntivi che il proxy non inoltra (ad es. User-Agent, Referer, ecc.).
+- Contatta l'amministratore dell'intranet per sapere se GitHub Pages è bloccato per motivi di sicurezza.
 
 ### Come aggiornare i campi del form di login
 Se l'intranet cambia i nomi dei campi del form di autenticazione:

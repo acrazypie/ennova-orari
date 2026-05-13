@@ -1,5 +1,15 @@
 import { login } from './auth.js';
 
+// ===== CONFIGURAZIONE PROXY CORS =====
+// Cambia questo URL con il tuo proxy CORS preferito.
+// Deve corrispondere a quello in auth.js.
+// Opzioni:
+//   - Public (instabile): 'https://api.allorigins.win/raw?url='
+//   - Self-hosted (consigliato): 'https://tuo-proxy.example.com/'
+// Vedi README.md per istruzioni di self-hosting.
+const PROXY_URL = 'https://api.allorigins.win/raw?url=';
+// =====================================
+
 export async function fetchSchedule() {
     const credentials = JSON.parse(localStorage.getItem('credentials'));
     if (!credentials) {
@@ -10,9 +20,8 @@ export async function fetchSchedule() {
     await login(credentials.username, credentials.password);
 
     // Fetch schedule page
-    const proxyUrl = 'https://thingproxy.freeboard.io/fetch/';
     const scheduleUrl = 'https://itpomezia.com/intranet/pages/bacheca/mio-calendario';
-    const fullUrl = proxyUrl + scheduleUrl;
+    const fullUrl = PROXY_URL + encodeURIComponent(scheduleUrl);
 
     let response;
     try {

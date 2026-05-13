@@ -1,5 +1,14 @@
 const CREDENTIALS_KEY = 'credentials';
 
+// ===== CONFIGURAZIONE PROXY CORS =====
+// Cambia questo URL con il tuo proxy CORS preferito.
+// Opzioni:
+//   - Public (instabile): 'https://api.allorigins.win/raw?url='
+//   - Self-hosted (consigliato): 'https://tuo-proxy.example.com/'
+// Vedi README.md per istruzioni di self-hosting.
+const PROXY_URL = 'https://api.allorigins.win/raw?url=';
+// =====================================
+
 export function getCredentials() {
     const stored = localStorage.getItem(CREDENTIALS_KEY);
     return stored ? JSON.parse(stored) : null;
@@ -14,9 +23,8 @@ export function clearCredentials() {
 }
 
 export async function login(username, password) {
-    const proxyUrl = 'https://thingproxy.freeboard.io/fetch/';
     const loginUrl = 'https://www.itpomezia.com/intranet/login.php?t=76';
-    const fullUrl = proxyUrl + loginUrl;
+    const fullUrl = PROXY_URL + encodeURIComponent(loginUrl);
 
     const formData = new FormData();
     formData.append('ennova_id', username);
