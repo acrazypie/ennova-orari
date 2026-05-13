@@ -103,7 +103,10 @@ Se l'intranet cambia i nomi dei campi del form di autenticazione:
 1. Apri gli Strumenti di Sviluppo del browser (F12).
 2. Vai alla pagina di login dell'intranet.
 3. Ispeziona il form di login per trovare i nomi esatti dei campi input.
-4. Aggiorna i valori in `auth.js` nella funzione `login()` (attualmente: `ennova_id`, `password_intranet`, `action`).
+4. L'app **estrae automaticamente** il `csrf_token` dal form — non devi fare nulla.
+5. Se i nomi dei campi dati cambiano, aggiorna in `auth.js` nella funzione `login()` le righe con `params.append()`.
+   - Attualmente: `ennova_id`, `password_intranet`, `action`
+
 
 ### Chiavi localStorage usate dall'app
 - `"credentials"`: Oggetto JSON con `username` e `password` (crittografati? No, salvati in chiaro).
