@@ -22,7 +22,7 @@ export function clearCredentials() {
 }
 
 export async function login(username, password) {
-    const loginUrl = 'https://www.itpomezia.com/intranet/:399';
+    const loginUrl = 'https://www.itpomezia.com/intranet/login.php?t=76';
     const fullProxyUrl = PROXY_URL + loginUrl;
 
     // Step 1: Fetch the login page to extract the CSRF token
