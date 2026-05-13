@@ -24,10 +24,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         renderShifts(shifts);
     } catch (error) {
         console.error('Error fetching schedule:', error);
-        const message = error.message.includes('Failed to fetch')
+        const message = error.message.includes('Failed to fetch') || error.message.includes('Proxy failure')
             ? 'Impossibile caricare i turni. Potrebbe essere un problema di CORS / proxy o di autenticazione.'
             : 'Impossibile caricare i turni. Controlla le credenziali nelle impostazioni.';
-        showError(message);
+        showError(message, error.message);
     } finally {
         hideLoading();
     }
@@ -48,10 +48,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             renderShifts(shifts);
         } catch (error) {
             console.error('Error refreshing schedule:', error);
-            const message = error.message.includes('Failed to fetch')
+            const message = error.message.includes('Failed to fetch') || error.message.includes('Proxy failure')
                 ? 'Impossibile aggiornare i turni. Potrebbe essere un problema di CORS / proxy o di autenticazione.'
                 : 'Impossibile aggiornare i turni. Controlla le credenziali nelle impostazioni.';
-            showError(message);
+            showError(message, error.message);
         } finally {
             hideLoading();
         }

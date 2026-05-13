@@ -18,9 +18,17 @@ export function hideLoading() {
     document.getElementById('loading').classList.add('hidden');
 }
 
-export function showError(message = 'Impossibile caricare i turni. Controlla le credenziali nelle impostazioni.') {
+export function showError(message = 'Impossibile caricare i turni. Controlla le credenziali nelle impostazioni.', detail = '') {
     const errorElement = document.getElementById('error');
     errorElement.querySelector('p').textContent = message;
+    const detailElement = document.getElementById('error-detail');
+    if (detail) {
+        detailElement.textContent = detail;
+        detailElement.classList.remove('hidden');
+    } else {
+        detailElement.textContent = '';
+        detailElement.classList.add('hidden');
+    }
     errorElement.classList.remove('hidden');
     document.getElementById('shifts').innerHTML = '';
 }

@@ -125,6 +125,14 @@ body {
     color: var(--error-color);
 }
 
+.error-detail {
+    margin-top: 0.5rem;
+    color: var(--text-color);
+    opacity: 0.85;
+    font-size: 0.95rem;
+    word-break: break-word;
+}
+
 .shifts {
     display: flex;
     flex-direction: column;

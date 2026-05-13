@@ -23,14 +23,19 @@ export async function login(username, password) {
     formData.append('password_intranet', password);
     formData.append('action', 'login');
 
-    const response = await fetch(fullUrl, {
-        method: 'POST',
-        body: formData,
-        mode: 'cors'
-    });
+    let response;
+    try {
+        response = await fetch(fullUrl, {
+            method: 'POST',
+            body: formData,
+            mode: 'cors'
+        });
+    } catch (error) {
+        throw new Error(`Login request failed: ${error.message}`);
+    }
 
     if (!response.ok) {
-        throw new Error('Login failed');
+        throw new Error(`Login failed: HTTP ${response.status}`);
     }
 
     return response;

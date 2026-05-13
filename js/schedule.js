@@ -14,9 +14,18 @@ export async function fetchSchedule() {
     const scheduleUrl = 'https://itpomezia.com/intranet/pages/bacheca/mio-calendario';
     const fullUrl = proxyUrl + encodeURIComponent(scheduleUrl);
 
-    const response = await fetch(fullUrl);
+    let response;
+    try {
+        response = await fetch(fullUrl);
+    } catch (error) {
+        throw new Error(`Schedule request failed: ${error.message}`);
+    }
+
     if (!response.ok) {
-        throw new Error('Failed to fetch schedule');
+        if (response.status === 530) {
+            throw new Error('Proxy failure (530). Il proxy CORS potrebbe essere temporaneamente non disponibile.');
+        }
+        throw new Error(`Failed to fetch schedule: HTTP ${response.status}`);
     }
 
     const html = await response.text();

@@ -52,6 +52,7 @@ L'app usa `https://corsproxy.io/?` preposto agli URL delle richieste per aggirar
 **Limitazioni:**
 - `corsproxy.io` e molti altri proxy CORS pubblici inviano l'header `Access-Control-Allow-Origin: *`, che non è compatibile con richieste che usano `credentials: include`.
 - Per questo motivo il codice ora evita `credentials: include`; tuttavia se il login richiede cookie di sessione il proxy pubblico potrebbe comunque non funzionare.
+- In particolare, un errore `530` indica che il proxy pubblico è temporaneamente non disponibile o sovraccarico.
 - Se noti che il login fallisce o la pagina dei turni non viene caricata, prova l'opzione proxy self-hosted descritta sotto.
 
 ### Come self-hostare un proxy CORS alternativo
