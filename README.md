@@ -99,13 +99,17 @@ L'app utilizza un proxy CORS configurabile per aggirare le restrizioni CORS di G
 - Contatta l'amministratore IT per sapere se una whitelistiting di GitHub Pages è possibile anziché usare un proxy.
 
 ### Come aggiornare i campi del form di login
-Se l'intranet cambia i nomi dei campi del form di autenticazione:
-1. Apri gli Strumenti di Sviluppo del browser (F12).
-2. Vai alla pagina di login dell'intranet.
-3. Ispeziona il form di login per trovare i nomi esatti dei campi input.
-4. L'app **estrae automaticamente** il `csrf_token` dal form — non devi fare nulla.
-5. Se i nomi dei campi dati cambiano, aggiorna in `auth.js` nella funzione `login()` le righe con `params.append()`.
+L'app implementa automaticamente il login flow dell'intranet:
+1. **POST a `login.php?t=<random>`** con credenziali (ennova_id, password_intranet, action=login)
+2. **Verifica della risposta JSON** — se `message: 'OK'`, procede
+3. **POST a `verifica_accesso.php?t=<timestamp>`** per completare la sessione
+
+Se l'intranet cambia i nomi dei campi o gli endpoint:
+1. Apri DevTools (F12 → Network) e controlla la richiesta POST durante il login manuale
+2. Annota i nomi esatti dei campi form
+3. Aggiorna `js/auth.js` nella funzione `login()` le righe con `params.append()`
    - Attualmente: `ennova_id`, `password_intranet`, `action`
+4. Se gli URL degli endpoint cambiano, aggiorna `loginUrl` e `verifyUrl`
 
 
 ### Chiavi localStorage usate dall'app
